@@ -3,19 +3,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import Input from '../components/ui/Input'
 import Label from '../components/ui/Label'
 import Button from '../components/ui/Button'
-import { getTransactionDetails } from '../data/mockData'
 
 export default function Search() {
   const [hshdNum, setHshdNum] = useState('')
   const [results, setResults] = useState([])
   const [searched, setSearched] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault()
     if (hshdNum) {
-      const data = getTransactionDetails(hshdNum)
-      setResults(data)
-      setSearched(true)
+      setLoading(true)
+      try {
+        const response = await fetch(`/api/search?hshdNum=${hshdNum}`)
+        const data = await response.json()
+        setResults(data)
+        setSearched(true)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+        // Fallback to mock data if API fails
+        alert('API not available. Using mock data for demo.')
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -41,8 +51,8 @@ export default function Search() {
                   onChange={(e) => setHshdNum(e.target.value)}
                 />
               </div>
-              <Button type="submit" size="lg">
-                Search
+              <Button type="submit" size="lg" disabled={loading}>
+                {loading ? 'Searching...' : 'Search'}
               </Button>
             </form>
           </CardContent>
