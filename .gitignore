@@ -28,3 +28,7 @@ dist-ssr
 
 # SQL files (for local data loading)
 *.sql
+
+# Environment variables (contains sensitive data)
+.env
+.env.local
