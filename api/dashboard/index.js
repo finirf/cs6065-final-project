@@ -1,7 +1,15 @@
 const { Connection, Request, TYPES } = require('tedious');
 
 module.exports = async function (context, req) {
+    context.log('Starting dashboard function');
     try {
+        context.log('Environment variables:', {
+            DB_SERVER: process.env.DB_SERVER ? 'set' : 'missing',
+            DB_USERNAME: process.env.DB_USERNAME ? 'set' : 'missing',
+            DB_PASSWORD: process.env.DB_PASSWORD ? 'set' : 'missing',
+            DB_NAME: process.env.DB_NAME ? 'set' : 'missing'
+        });
+
         const config = {
             server: process.env.DB_SERVER,
             authentication: {
@@ -18,11 +26,16 @@ module.exports = async function (context, req) {
             }
         };
 
+        context.log('Creating connection');
         const connection = new Connection(config);
-        
+
         const results = await new Promise((resolve, reject) => {
             connection.on('connect', (err) => {
-                if (err) reject(err);
+                if (err) {
+                    context.log('Connection error:', err);
+                    reject(err);
+                }
+                context.log('Connected to database');
                 
                 const queries = [
                     // Total households
@@ -98,9 +111,10 @@ module.exports = async function (context, req) {
             }
         };
     } catch (error) {
+        context.log('Error in dashboard function:', error);
         context.res = {
             status: 500,
-            body: { error: error.message },
+            body: { error: error.message, details: error.toString() },
             headers: {
                 'Content-Type': 'application/json'
             }
