@@ -15,7 +15,9 @@ export default function Search() {
     if (hshdNum) {
       setLoading(true)
       try {
-        const response = await fetch(`https://finirf-retail-api-baaea0fva6dddpfu.westus3-01.azurewebsites.net/api/search?hshdNum=${hshdNum}`)
+        // Pad with leading zeros to 4 digits
+        const paddedHshdNum = hshdNum.padStart(4, '0')
+        const response = await fetch(`https://finirf-retail-api-baaea0fva6dddpfu.westus3-01.azurewebsites.net/api/search?hshdNum=${paddedHshdNum}`)
         const data = await response.json()
         setResults(data)
         setSearched(true)

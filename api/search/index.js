@@ -51,7 +51,7 @@ module.exports = async function (context, req) {
                         p.BRAND_TY as BRAND_TYPE,
                         p.NATURAL_ORGANIC_FLAG
                     FROM Transactions t
-                    JOIN Products p ON t.PRODUCT_NUM = p.PRODUCT_NUM
+                    LEFT JOIN Products p ON t.PRODUCT_NUM = p.PRODUCT_NUM
                     WHERE t.HSHD_NUM = @hshdNum
                     ORDER BY t.HSHD_NUM, t.BASKET_NUM, t.PURCHASE_, t.PRODUCT_NUM, p.DEPARTMENT, p.COMMODITY
                 `;
