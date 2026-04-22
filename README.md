@@ -128,13 +128,19 @@ See `ML-MODEL-WRITEUP.md` for detailed model descriptions.
 
 ## Deployment
 
+### Live URLs
+
+- **Frontend (Azure Static Web Apps)**: https://calm-mushroom-03389961e.7.azurestaticapps.net
+- **Backend API (Azure Functions)**: https://finirf-retail-api-baaea0fva6dddpfu.westus3-01.azurewebsites.net
+- **Database**: Azure SQL Database (Free Tier F0)
+
 ### Azure Deployment
 
 Follow the comprehensive deployment guide in `AZURE-DEPLOYMENT.md` to deploy to:
 
 1. Azure Static Web Apps (Free Tier)
 2. Azure SQL Database (Free Tier F0)
-3. Azure Blob Storage (Free Tier)
+3. Azure Functions (Node.js 22 LTS)
 
 ### Alternative Deployment
 
