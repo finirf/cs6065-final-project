@@ -98,8 +98,6 @@ module.exports = async function (context, req) {
                             GROUP BY p.DEPARTMENT 
                             ORDER BY total_spend DESC
                         `;
-                        // Using LEFT JOIN because some products might not exist in Products table
-                        // This way we still get transaction data even if product details are missing
                         allResults.topDepartments = await executeQuery(topDepartmentsQuery);
 
                         // Get monthly trend of total spend
