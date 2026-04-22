@@ -1,5 +1,5 @@
 {
   "build": {
-    "output_location": "dist"
+    "output_location": "build"
   }
 }
