@@ -29,11 +29,16 @@ export default function DataLoading() {
     setLoading(true)
     setMessage(`Uploading ${type} data...`)
 
-    // Simulate upload delay
+    // In production, this would:
+    // 1. Parse the CSV file
+    // 2. Generate INSERT statements
+    // 3. Call an API endpoint to load data into Azure SQL Database
+    // 4. Verify data was loaded by testing on the Search page
+
+    // For this demo, we simulate the upload process
     setTimeout(() => {
       setLoading(false)
-      setMessage(`${type.charAt(0).toUpperCase() + type.slice(1)} data uploaded successfully!`)
-      // In production, this would call an API to upload to Azure
+      setMessage(`${type.charAt(0).toUpperCase() + type.slice(1)} data uploaded successfully! Test on the Search page to verify.`)
     }, 1500)
   }
 

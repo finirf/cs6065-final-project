@@ -4,7 +4,8 @@ import Dashboard from './pages/Dashboard'
 import DataPull from './pages/DataPull'
 import Search from './pages/Search'
 import DataLoading from './pages/DataLoading'
-import { Home, BarChart3, Search as SearchIcon, Upload, Database } from 'lucide-react'
+import ChurnPrediction from './pages/ChurnPrediction'
+import { Home, BarChart3, Search as SearchIcon, Upload, Database, AlertTriangle } from 'lucide-react'
 
 function Navigation() {
   const location = useLocation()
@@ -32,6 +33,9 @@ function Navigation() {
             </NavLink>
             <NavLink to="/dataloading" icon={<Upload className="w-4 h-4" />}>
               Data Loading
+            </NavLink>
+            <NavLink to="/churnprediction" icon={<AlertTriangle className="w-4 h-4" />}>
+              Churn Prediction
             </NavLink>
             <Link to="/" className="px-4 py-2 text-sm text-slate-600 hover:text-slate-900">
               Logout
@@ -72,6 +76,7 @@ function App() {
         <Route path="/datapull" element={<DataPull />} />
         <Route path="/search" element={<Search />} />
         <Route path="/dataloading" element={<DataLoading />} />
+        <Route path="/churnprediction" element={<ChurnPrediction />} />
       </Routes>
     </Router>
   )
