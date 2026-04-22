@@ -2,7 +2,6 @@
   "name": "retail-analytics-api",
   "version": "1.0.0",
   "description": "Azure Functions API for Retail Analytics",
-  "main": "index.js",
   "scripts": {
     "start": "func start",
     "test": "echo \"Error: no test specified\" && exit 1"

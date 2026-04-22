@@ -37,63 +37,71 @@ module.exports = async function (context, req) {
                 }
                 context.log('Connected to database');
                 
-                const queries = [
-                    // Total households
-                    'SELECT COUNT(*) as total FROM Households',
-                    // Total transactions
-                    'SELECT COUNT(*) as total FROM Transactions',
-                    // Total spend
-                    'SELECT SUM(SPEND) as total FROM Transactions',
-                    // Average basket size
-                    'SELECT AVG(SPEND) as avg FROM Transactions',
-                    // Top departments by spend
-                    `SELECT TOP 5 p.DEPARTMENT, SUM(t.SPEND) as total_spend 
-                     FROM Transactions t 
-                     JOIN Products p ON t.PRODUCT_NUM = p.PRODUCT_NUM 
-                     GROUP BY p.DEPARTMENT 
-                     ORDER BY total_spend DESC`,
-                    // Monthly spend trend
-                    `SELECT YEAR, WEEK_NUM, SUM(SPEND) as total_spend 
-                     FROM Transactions 
-                     GROUP BY YEAR, WEEK_NUM 
-                     ORDER BY YEAR, WEEK_NUM 
-                     LIMIT 52`
-                ];
-                
-                const allResults = {};
-                let completed = 0;
-                
-                queries.forEach((query, index) => {
-                    const request = new Request(query, (err, rowCount) => {
-                        if (err) reject(err);
-                    });
-                    
-                    const rows = [];
-                    request.on('row', (columns) => {
-                        const row = {};
-                        columns.forEach(column => {
-                            row[column.metadata.colName] = column.value;
+                const executeQuery = (query) => {
+                    return new Promise((resolve, reject) => {
+                        const request = new Request(query, (err) => {
+                            if (err) reject(err);
                         });
-                        rows.push(row);
+
+                        const rows = [];
+                        request.on('row', (columns) => {
+                            const row = {};
+                            columns.forEach(column => {
+                                row[column.metadata.colName] = column.value;
+                            });
+                            rows.push(row);
+                        });
+
+                        request.on('requestCompleted', () => {
+                            resolve(rows);
+                        });
+
+                        connection.execSql(request);
                     });
-                    
-                    request.on('requestCompleted', () => {
-                        if (index === 0) allResults.totalHouseholds = rows[0]?.total || 0;
-                        if (index === 1) allResults.totalTransactions = rows[0]?.total || 0;
-                        if (index === 2) allResults.totalSpend = rows[0]?.total || 0;
-                        if (index === 3) allResults.avgBasketSize = rows[0]?.avg || 0;
-                        if (index === 4) allResults.topDepartments = rows;
-                        if (index === 5) allResults.monthlyTrend = rows;
-                        
-                        completed++;
-                        if (completed === queries.length) {
-                            connection.close();
-                            resolve(allResults);
-                        }
-                    });
-                    
-                    connection.execSql(request);
-                });
+                };
+
+                (async () => {
+                    try {
+                        const allResults = {};
+
+                        allResults.totalHouseholds = (await executeQuery(
+                            'SELECT COUNT(*) as total FROM Households'
+                        ))[0]?.total || 0;
+
+                        allResults.totalTransactions = (await executeQuery(
+                            'SELECT COUNT(*) as total FROM Transactions'
+                        ))[0]?.total || 0;
+
+                        allResults.totalSpend = (await executeQuery(
+                            'SELECT SUM(SPEND) as total FROM Transactions'
+                        ))[0]?.total || 0;
+
+                        allResults.avgBasketSize = (await executeQuery(
+                            'SELECT AVG(SPEND) as avg FROM Transactions'
+                        ))[0]?.avg || 0;
+
+                        allResults.topDepartments = await executeQuery(
+                            `SELECT TOP 5 p.DEPARTMENT, SUM(t.SPEND) as total_spend 
+                             FROM Transactions t 
+                             LEFT JOIN Products p ON t.PRODUCT_NUM = p.PRODUCT_NUM 
+                             WHERE p.DEPARTMENT IS NOT NULL
+                             GROUP BY p.DEPARTMENT 
+                             ORDER BY total_spend DESC`
+                        );
+
+                        allResults.monthlyTrend = await executeQuery(
+                            `SELECT TOP 52 YEAR, WEEK_NUM, SUM(SPEND) as total_spend 
+                             FROM Transactions 
+                             GROUP BY YEAR, WEEK_NUM 
+                             ORDER BY YEAR, WEEK_NUM`
+                        );
+
+                        connection.close();
+                        resolve(allResults);
+                    } catch (err) {
+                        reject(err);
+                    }
+                })();
             });
             
             connection.on('error', (err) => {

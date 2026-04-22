@@ -15,7 +15,7 @@ export default function Search() {
     if (hshdNum) {
       setLoading(true)
       try {
-        const response = await fetch(`/api/search?hshdNum=${hshdNum}`)
+        const response = await fetch(`https://finirf-retail-api-baaea0fva6dddpfu.westus3-01.azurewebsites.net/api/search?hshdNum=${hshdNum}`)
         const data = await response.json()
         setResults(data)
         setSearched(true)

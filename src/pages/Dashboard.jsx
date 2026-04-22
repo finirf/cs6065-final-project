@@ -16,7 +16,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/dashboard')
+    fetch('https://finirf-retail-api-baaea0fva6dddpfu.westus3-01.azurewebsites.net/api/dashboard')
       .then(res => res.json())
       .then(setData)
       .catch(err => {
