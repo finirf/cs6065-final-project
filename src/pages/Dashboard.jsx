@@ -35,11 +35,6 @@ export default function Dashboard() {
   const totalSpend = data.totalSpend || 0
   const avgSpendPerTransaction = data.avgBasketSize || 0
 
-  const departmentChartData = data.topDepartments.map(d => ({
-    name: d.DEPARTMENT,
-    value: parseFloat((d.total_spend || 0).toFixed(2))
-  }))
-
   const loyaltyChartData = [
     { name: 'Loyalty Member', value: Math.round(totalHouseholds * 0.7) },
     { name: 'Non-Member', value: Math.round(totalHouseholds * 0.3) }
@@ -93,25 +88,6 @@ export default function Dashboard() {
 
         {/* Charts Row 1 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl font-bold">Spending by Department</CardTitle>
-              <CardDescription>Total spend across product departments</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={departmentChartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="value" fill="#3b82f6" name="Total Spend ($)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
           <Card>
             <CardHeader>
               <CardTitle className="text-xl font-bold">Loyalty Program Distribution</CardTitle>
