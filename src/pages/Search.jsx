@@ -15,7 +15,7 @@ export default function Search() {
     if (hshdNum) {
       setLoading(true)
       try {
-        // Pad with leading zeros to 4 digits
+        // Need to pad with zeros since DB stores HSHD_NUM as string (e.g., "0010" not "10")
         const paddedHshdNum = hshdNum.padStart(4, '0')
         const response = await fetch(`https://finirf-retail-api-baaea0fva6dddpfu.westus3-01.azurewebsites.net/api/search?hshdNum=${paddedHshdNum}`)
         const data = await response.json()

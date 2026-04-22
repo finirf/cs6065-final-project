@@ -68,33 +68,52 @@ module.exports = async function (context, req) {
                             'SELECT COUNT(*) as total FROM Households'
                         ))[0]?.total || 0;
 
+                        // Get total number of transactions
                         allResults.totalTransactions = (await executeQuery(
                             'SELECT COUNT(*) as total FROM Transactions'
                         ))[0]?.total || 0;
 
-                        allResults.totalSpend = (await executeQuery(
-                            'SELECT SUM(SPEND) as total FROM Transactions'
-                        ))[0]?.total || 0;
+                        // Get total spend across all transactions
+                        const query = `
+                            SELECT 
+                                SUM(SPEND) as total 
+                            FROM Transactions
+                        `;
+                        // This query simply sums up the spend across all transactions
+                        allResults.totalSpend = (await executeQuery(query))[0]?.total || 0;
 
+                        // Get average basket size
                         allResults.avgBasketSize = (await executeQuery(
                             'SELECT AVG(SPEND) as avg FROM Transactions'
                         ))[0]?.avg || 0;
 
-                        allResults.topDepartments = await executeQuery(
-                            `SELECT TOP 5 p.DEPARTMENT, SUM(t.SPEND) as total_spend 
-                             FROM Transactions t 
-                             LEFT JOIN Products p ON t.PRODUCT_NUM = p.PRODUCT_NUM 
-                             WHERE p.DEPARTMENT IS NOT NULL
-                             GROUP BY p.DEPARTMENT 
-                             ORDER BY total_spend DESC`
-                        );
+                        // Get top 5 departments by total spend
+                        const topDepartmentsQuery = `
+                            SELECT TOP 5 
+                                p.DEPARTMENT, 
+                                SUM(t.SPEND) as total_spend 
+                            FROM Transactions t 
+                            LEFT JOIN Products p ON t.PRODUCT_NUM = p.PRODUCT_NUM 
+                            WHERE p.DEPARTMENT IS NOT NULL
+                            GROUP BY p.DEPARTMENT 
+                            ORDER BY total_spend DESC
+                        `;
+                        // Using LEFT JOIN because some products might not exist in Products table
+                        // This way we still get transaction data even if product details are missing
+                        allResults.topDepartments = await executeQuery(topDepartmentsQuery);
 
-                        allResults.monthlyTrend = await executeQuery(
-                            `SELECT TOP 52 YEAR, WEEK_NUM, SUM(SPEND) as total_spend 
-                             FROM Transactions 
-                             GROUP BY YEAR, WEEK_NUM 
-                             ORDER BY YEAR, WEEK_NUM`
-                        );
+                        // Get monthly trend of total spend
+                        const monthlyTrendQuery = `
+                            SELECT TOP 52 
+                                YEAR, 
+                                WEEK_NUM, 
+                                SUM(SPEND) as total_spend 
+                            FROM Transactions 
+                            GROUP BY YEAR, WEEK_NUM 
+                            ORDER BY YEAR, WEEK_NUM
+                        `;
+                        // This query groups transactions by year and week number, and sums up the spend for each group
+                        allResults.monthlyTrend = await executeQuery(monthlyTrendQuery);
 
                         connection.close();
                         resolve(allResults);

@@ -55,6 +55,7 @@ module.exports = async function (context, req) {
                     WHERE t.HSHD_NUM = @hshdNum
                     ORDER BY t.HSHD_NUM, t.BASKET_NUM, t.PURCHASE_, t.PRODUCT_NUM, p.DEPARTMENT, p.COMMODITY
                 `;
+                // LEFT JOIN makes sure we still get transaction data even if product info is missing
                 
                 const request = new Request(query, (err, rowCount) => {
                     if (err) reject(err);

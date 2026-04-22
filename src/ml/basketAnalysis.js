@@ -1,5 +1,5 @@
-// Basket Analysis using ML Models (Linear Regression, Random Forest, Gradient Boosting)
-// This module implements market basket analysis using machine learning approaches
+// Basket Analysis with ML models - replacing Apriori since that was giving static rules
+// Using Linear Regression, Random Forest, and Gradient Boosting to predict what customers buy together
 
 // Linear Regression for predicting product purchase probability
 class LinearRegressionModel {
