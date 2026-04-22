@@ -9,13 +9,15 @@ This project applies cloud computing, data engineering, and data science skills 
 ## Features
 
 - **Login Page**: Secure authentication with username, password, and email fields
-- **Data Pull Display**: View sample transaction data for specific households
-- **Interactive Search**: Search and filter transaction data by household number
-- **Data Loading**: Upload CSV files for Transactions, Households, and Products
-- **Dashboard**: Comprehensive retail KPIs with interactive visualizations
-- **ML Models**: 
+- **Data Pull Display**: View sample transaction data for specific households (connected to real Azure SQL Database)
+- **Interactive Search**: Search and filter transaction data by household number with auto-padding
+- **Data Loading**: Upload CSV files for Transactions, Households, and Products (UI for data management)
+- **Dashboard**: Comprehensive retail KPIs with interactive visualizations (connected to real API)
+- **Churn Prediction**: Analyze customer engagement metrics to identify at-risk customers
+- **ML Models**:
   - Linear Regression for Customer Lifetime Value (CLV) prediction
-  - Market Basket Analysis for cross-selling opportunities
+  - Random Forest for basket analysis and cross-selling opportunities
+  - Gradient Boosting for complex pattern prediction
   - Churn Prediction for customer retention strategies
 
 ## Tech Stack
@@ -27,15 +29,15 @@ This project applies cloud computing, data engineering, and data science skills 
 - **Recharts** for data visualization
 - **Lucide React** for icons
 
-### Backend (Planned)
-- **Node.js** with Express
+### Backend
+- **Node.js** with Azure Functions
 - **Azure SQL Database** (Free Tier F0)
-- **Azure Blob Storage** for file uploads
+- **Tedious** for SQL Server connectivity
 
 ### Cloud Deployment
 - **Azure Static Web Apps** (Free Tier)
+- **Azure Functions** (Node.js)
 - **Azure SQL Database** (Free Tier F0 - 32GB)
-- **Azure Blob Storage** (Free Tier)
 
 ## Getting Started
 
@@ -84,15 +86,14 @@ windsurf-project/
 │   ├── pages/
 │   │   ├── Dashboard.jsx          # Main dashboard with KPIs
 │   │   ├── DataLoading.jsx        # CSV upload interface
-│   │   ├── DataPull.jsx           # Sample data display
+│   │   ├── DataPull.jsx           # Sample data display (real API)
 │   │   ├── Login.jsx              # Login page
-│   │   └── Search.jsx             # Transaction search
+│   │   ├── Search.jsx             # Transaction search
+│   │   └── ChurnPrediction.jsx    # Churn analysis page
 │   ├── App.jsx                    # Main app with routing
 │   ├── index.css                  # Global styles with Tailwind
 │   └── main.jsx                   # React entry point
 ├── database-schema.sql            # Azure SQL database schema
-├── ML-MODEL-WRITEUP.md           # ML model documentation
-├── AZURE-DEPLOYMENT.md          # Azure deployment guide
 └── package.json
 ```
 
@@ -119,12 +120,12 @@ See `database-schema.sql` for the complete schema with actual column names from 
 Predicts Customer Lifetime Value based on purchase frequency and spending patterns to prioritize high-value customers.
 
 ### Market Basket Analysis
-Uses association rule mining (Apriori algorithm) to identify commonly purchased product combinations for cross-selling opportunities.
+Uses machine learning models (Linear Regression, Random Forest, Gradient Boosting) to identify commonly purchased product combinations for cross-selling opportunities.
 
 ### Churn Prediction
 Analyzes customer engagement metrics to identify customers at risk of disengaging and provides retention strategies.
 
-See `ML-MODEL-WRITEUP.md` for detailed model descriptions.
+Note: Detailed ML model descriptions are provided in a separate docx file for submission.
 
 ## Deployment
 
@@ -133,14 +134,6 @@ See `ML-MODEL-WRITEUP.md` for detailed model descriptions.
 - **Frontend (Azure Static Web Apps)**: https://calm-mushroom-03389961e.7.azurestaticapps.net
 - **Backend API (Azure Functions)**: https://finirf-retail-api-baaea0fva6dddpfu.westus3-01.azurewebsites.net
 - **Database**: Azure SQL Database (Free Tier F0)
-
-### Azure Deployment
-
-Follow the comprehensive deployment guide in `AZURE-DEPLOYMENT.md` to deploy to:
-
-1. Azure Static Web Apps (Free Tier)
-2. Azure SQL Database (Free Tier F0)
-3. Azure Functions (Node.js 22 LTS)
 
 ### Alternative Deployment
 
